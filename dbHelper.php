@@ -48,5 +48,30 @@
 			}
 			return $returnValue;
 		}
+
+		public function loginMaintainer($email, $password) {
+			include "deconnect.php";
+
+			$passwordH = sha1($password);
+			$sql_login = "select email, password from maintainers where email = '" . $email . "' and password = '" . $passwordH . "'";
+			$result = $conn->query($sql_login);
+			return ($result->num_rows > 0);
+		}
+
+		public function getIssues() {
+			include "deconnect.php";
+
+			$returnValue = array();
+			$sql = "select complain, email from complains;";
+			$result = $conn->query($sql);
+			
+			if ($result->num_rows > 0) {
+				while ($rows = $result->fetch_assoc()) {
+					array_push($returnValue, array($rows["complain"], $rows["email"]));
+				}
+			}
+
+			return $returnValue;
+		}
 	}	
 ?>
