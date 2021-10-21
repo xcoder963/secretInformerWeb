@@ -36,13 +36,14 @@
 			return $returnValue;
 		}
 
-		public function registerIssue($email, $issue) {
+		public function registerIssue($email, $issue, $lat, $longi) {
 			include "deconnect.php";
 
 			$returnValue = "unsuccess";
-			$sql_issue = "insert into complains(complain, email) values(?, ?)";
+			$sql_issue = "insert into complains(complain, email, locationFromUser) values(?, ?, ?)";
 			$stmt = $conn->prepare($sql_issue);
-			$stmt->bind_param("ss", $issue, $email);
+			$location = $lat . "," . $longi;
+			$stmt->bind_param("sss", $issue, $email, $location);
 			if ($stmt->execute()) {
 				$returnValue = "success";
 			}
@@ -60,17 +61,51 @@
 
 		public function getIssues() {
 			include "deconnect.php";
+			include "encdec.php";
 
 			$returnValue = array();
-			$sql = "select complain, email from complains;";
+			$sql = "select id, complain, email from complains;";
 			$result = $conn->query($sql);
 			
 			if ($result->num_rows > 0) {
 				while ($rows = $result->fetch_assoc()) {
-					array_push($returnValue, array($rows["complain"], $rows["email"]));
+					array_push($returnValue, array(AesCipher::decrypt($rows["complain"]), $rows["email"], $rows["id"]));
 				}
 			}
 
+			return $returnValue;
+		}
+
+		public function getIssueInfo($values) {
+			include "deconnect.php";
+			include "encdec.php";
+			
+			$returnValue = array();
+
+			$valuesH = explode(",", $values);
+			
+			$sql = "select name, phno from users where email = '" . $valuesH[0] . "';";
+			$results = $conn->query($sql);
+			
+			if ($results->num_rows > 0) {
+				//$returnValue = array("das", "dsad", "dsda", "dsad");
+				while ($row = $results->fetch_assoc()) {
+					array_push($returnValue, $row["name"]);
+					array_push($returnValue, $row["phno"]);
+					array_push($returnValue, $valuesH[0]);
+				}
+			}
+
+			$sql = "select complain, locationFromUser from complains where email = '" . $valuesH[0] . "' and id = '" . $valuesH[1] ."';";
+			$results = $conn->query($sql);
+
+			if ($results->num_rows > 0) {
+				while ($row = $results->fetch_assoc()) {
+					array_push($returnValue, AesCipher::decrypt($row["complain"]));
+					array_push($returnValue, $row["locationFromUser"]);
+				}
+			}
+			
 			return $returnValue;
 		}
 	}	
