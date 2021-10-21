@@ -46,16 +46,17 @@
         <?php 
             $iter = 0;
             while ($iter < count($issuesH)) {
+				$btnValue = $issuesH[$iter][1] . "," . $issuesH[$iter][2];
                 echo '<div class="d-flex justify-content-center align-items-center" style="font-size: 32px; font-weight: bold;">';
                 echo '  <div class="card bg-light shadow-lg px-3 border rounded" style="width: 80%;">';
                 echo '      <div class="card-body">';
-				echo '			<form action="showIssue.php" method="GET">';
+				echo '			<form action="displayIssue.php" method="GET">';
                 echo '          <h5 class="card-title">' . $issuesH[$iter][1] . '</h5>';
                 echo '          <div id="colap' . $iter . '" class="collapse">';
                 echo '              <p class="card-text" style="font-size: 15px;">' . $issuesH[$iter][0] . '</p>';
                 echo '          </div>';
                 echo '          <button data-toggle="collapse" data-target="#colap' . $iter . '" type="button" class="btn btn-dark mt-3">SEE ALL</button>';
-				echo '			<button type="submit" name="showIssue" value="' . $issuesH[$iter][1] . '" class="btn btn-danger mt-3">VIEW</button>';
+				echo '			<button type="submit" name="showIssue" value="' . $btnValue . '" class="btn btn-danger mt-3">VIEW</button>';
 				echo '			</form>';
                 echo '      </div>';
                 echo '  </div>';
@@ -65,6 +66,6 @@
         ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-
+		
 	</body>
 </html>

@@ -23,7 +23,9 @@
 			//will take other things later
 			$email = $_POST["email"];
 			$issue = $_POST["complain"];
-			$returnVal = $dbHelper->registerIssue($email, $issue);
+			$lat = $_POST["lat"];
+			$longi = $_POST["longi"];
+			$returnVal = $dbHelper->registerIssue($email, $issue, $lat, $longi);
 			break;
 	}
 
